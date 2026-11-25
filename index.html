@@ -25,24 +25,23 @@
     --glass:rgba(16,12,36,.55);
     --line:rgba(120,140,255,.18);
   }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
+  *{box-sizing:border-box;margin:0;padding:0;min-width:0}
+  html,body{min-height:100%}
   body{
-    background:var(--bg);
-    color:var(--text);
+    background:var(--bg);color:var(--text);
     font-family:"JetBrains Mono",ui-monospace,monospace;
-    overflow:hidden;
-    cursor:default;
+    overflow-x:hidden;
   }
+  body:not(.entered){overflow:hidden}
   a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit}
 
   /* ---------- фон ---------- */
   .bg{
     position:fixed;inset:-40px;
     background:url("bg.jpg") center/cover no-repeat;
     filter:blur(18px) brightness(.38) saturate(1.4);
-    transform:scale(1.08);
-    z-index:0;
+    transform:scale(1.08);z-index:0;
   }
   .bg::after{
     content:"";position:absolute;inset:0;
@@ -57,50 +56,36 @@
     background:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 3px);
     mix-blend-mode:overlay;
   }
-  canvas#fx{position:fixed;inset:0;z-index:2;pointer-events:none}
+  canvas#fx{position:fixed;inset:0;z-index:2;pointer-events:none;width:100%;height:100%}
 
   /* ---------- экран входа ---------- */
   #gate{
-    position:fixed;inset:0;z-index:50;
-    display:grid;place-items:center;
-    background:rgba(5,4,12,.82);
-    backdrop-filter:blur(14px);
-    cursor:pointer;
+    position:fixed;inset:0;z-index:50;display:grid;place-items:center;
+    background:rgba(5,4,12,.82);backdrop-filter:blur(14px);cursor:pointer;
     transition:opacity .8s ease,visibility .8s;
   }
   #gate.hide{opacity:0;visibility:hidden}
   .gate-inner{text-align:center}
   .gate-title{
     font-family:Unbounded,sans-serif;font-weight:900;
-    font-size:clamp(28px,6vw,56px);letter-spacing:.08em;
-    color:#fff;
+    font-size:clamp(28px,6vw,56px);letter-spacing:.08em;color:#fff;
     text-shadow:0 0 6px var(--cyan),0 0 18px var(--cyan),0 0 42px var(--violet);
     animation:flicker 4s infinite;
   }
   .gate-sub{margin-top:14px;color:var(--muted);font-size:13px;letter-spacing:.3em;text-transform:uppercase}
   .gate-sub span{animation:blink 1.2s steps(1) infinite}
   @keyframes blink{50%{opacity:0}}
-  @keyframes flicker{
-    0%,19%,21%,23%,55%,57%,100%{opacity:1}
-    20%,22%,56%{opacity:.35}
-  }
+  @keyframes flicker{0%,19%,21%,23%,55%,57%,100%{opacity:1}20%,22%,56%{opacity:.35}}
 
   /* ---------- карточка ---------- */
-  main{
-    position:relative;z-index:5;
-    min-height:100%;display:grid;place-items:center;padding:24px;
-  }
+  main{position:relative;z-index:5;min-height:100vh;display:grid;place-items:center;padding:40px 16px}
   .card{
-    width:min(440px,100%);
-    padding:34px 28px 22px;
-    border-radius:24px;
-    background:var(--glass);
-    border:1px solid var(--line);
+    position:relative;width:min(460px,100%);
+    padding:34px 26px 22px;border-radius:24px;
+    background:var(--glass);border:1px solid var(--line);
     backdrop-filter:blur(18px) saturate(1.3);
     box-shadow:0 0 0 1px rgba(255,255,255,.03) inset,0 30px 80px rgba(0,0,0,.55),0 0 60px rgba(165,91,255,.15);
-    text-align:center;
-    transform-style:preserve-3d;
-    transition:transform .2s ease-out;
+    text-align:center;transition:transform .2s ease-out;
     opacity:0;translate:0 20px;
   }
   body.entered .card{animation:rise .9s cubic-bezier(.2,.8,.2,1) forwards}
@@ -109,117 +94,187 @@
     content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;
     background:linear-gradient(135deg,var(--cyan),transparent 35%,transparent 65%,var(--pink));
     -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-    -webkit-mask-composite:xor;mask-composite:exclude;
-    opacity:.7;pointer-events:none;
+    -webkit-mask-composite:xor;mask-composite:exclude;opacity:.7;pointer-events:none;
   }
 
   .avatar-wrap{position:relative;width:132px;height:132px;margin:0 auto 18px}
-  .avatar-wrap::before{
-    content:"";position:absolute;inset:-5px;border-radius:50%;
+  .avatar-wrap::before,.avatar-wrap::after{
+    content:"";position:absolute;border-radius:50%;
     background:conic-gradient(var(--cyan),var(--violet),var(--pink),var(--orange),var(--cyan));
     animation:spin 6s linear infinite;
-    filter:blur(1px);
   }
-  .avatar-wrap::after{
-    content:"";position:absolute;inset:-14px;border-radius:50%;
-    background:conic-gradient(var(--cyan),var(--violet),var(--pink),var(--orange),var(--cyan));
-    filter:blur(22px);opacity:.55;animation:spin 6s linear infinite;z-index:-1;
-  }
-  .avatar{
-    position:relative;width:100%;height:100%;border-radius:50%;
-    object-fit:cover;border:4px solid var(--bg);display:block;
-  }
+  .avatar-wrap::before{inset:-5px;filter:blur(1px)}
+  .avatar-wrap::after{inset:-14px;filter:blur(22px);opacity:.55;z-index:-1}
+  .avatar{position:relative;width:100%;height:100%;border-radius:50%;object-fit:cover;border:4px solid var(--bg);display:block}
   .status{
-    position:absolute;right:6px;bottom:6px;width:18px;height:18px;border-radius:50%;
-    background:#3dffa0;border:3px solid var(--bg);box-shadow:0 0 12px #3dffa0;
+    position:absolute;right:6px;bottom:6px;width:20px;height:20px;border-radius:50%;
+    background:#747f8d;border:3px solid var(--bg);transition:background .3s,box-shadow .3s;display:none;
   }
+  .status[data-s]{display:block}
+  .status[data-s=online]{background:#3dffa0;box-shadow:0 0 12px #3dffa0}
+  .status[data-s=idle]{background:#f0b232;box-shadow:0 0 12px #f0b232}
+  .status[data-s=dnd]{background:#f23f43;box-shadow:0 0 12px #f23f43}
   @keyframes spin{to{transform:rotate(360deg)}}
 
   .name{
     font-family:Unbounded,sans-serif;font-weight:900;font-size:38px;letter-spacing:.02em;
-    display:inline-flex;align-items:center;gap:10px;
-    color:#fff;
+    display:inline-flex;align-items:center;gap:10px;color:#fff;
     text-shadow:0 0 4px #fff,0 0 12px var(--cyan),0 0 28px var(--cyan),0 0 52px var(--violet);
   }
-  .name .glitch{position:relative}
-  .name .glitch::before,.name .glitch::after{
-    content:attr(data-text);position:absolute;left:0;top:0;width:100%;
-    overflow:hidden;opacity:0;text-shadow:none;
-  }
-  .name .glitch::before{color:var(--pink);animation:gl1 3.2s infinite steps(1);clip-path:inset(0 0 60% 0)}
-  .name .glitch::after{color:var(--cyan);animation:gl2 2.7s infinite steps(1);clip-path:inset(55% 0 0 0)}
+  .glitch{position:relative}
+  .glitch::before,.glitch::after{content:attr(data-text);position:absolute;left:0;top:0;width:100%;overflow:hidden;opacity:0;text-shadow:none}
+  .glitch::before{color:var(--pink);animation:gl1 3.2s infinite steps(1);clip-path:inset(0 0 60% 0)}
+  .glitch::after{color:var(--cyan);animation:gl2 2.7s infinite steps(1);clip-path:inset(55% 0 0 0)}
   @keyframes gl1{0%,92%,100%{transform:none;opacity:0}93%{transform:translate(-3px,-1px);opacity:.9}96%{transform:translate(2px,1px);opacity:.9}}
   @keyframes gl2{0%,88%,100%{transform:none;opacity:0}89%{transform:translate(3px,1px);opacity:.9}92%{transform:translate(-2px,0);opacity:.9}}
 
   .badge{
     font-family:"JetBrains Mono",monospace;font-weight:600;font-size:11px;letter-spacing:.12em;
     text-transform:uppercase;padding:4px 9px;border-radius:999px;
-    color:var(--violet);border:1px solid rgba(165,91,255,.6);
-    background:rgba(165,91,255,.12);text-shadow:0 0 8px var(--violet);
-    box-shadow:0 0 14px rgba(165,91,255,.35);
+    color:var(--violet);border:1px solid rgba(165,91,255,.6);background:rgba(165,91,255,.12);
+    text-shadow:0 0 8px var(--violet);box-shadow:0 0 14px rgba(165,91,255,.35);
   }
-
-  .typing{
-    margin-top:10px;min-height:22px;font-size:15px;color:var(--cyan);
-    text-shadow:0 0 10px rgba(62,244,255,.6);
-  }
+  .typing{margin-top:10px;min-height:22px;font-size:15px;color:var(--cyan);text-shadow:0 0 10px rgba(62,244,255,.6)}
   .typing .prompt{color:var(--pink)}
-  .typing .caret{display:inline-block;width:9px;height:17px;background:var(--cyan);vertical-align:-3px;margin-left:2px;animation:blink 1s steps(1) infinite;box-shadow:0 0 10px var(--cyan)}
+  .caret{display:inline-block;width:9px;height:17px;background:var(--cyan);vertical-align:-3px;margin-left:2px;animation:blink 1s steps(1) infinite;box-shadow:0 0 10px var(--cyan)}
 
-  .meta{display:flex;justify-content:center;gap:16px;margin-top:14px;color:var(--muted);font-size:12px}
+  .meta{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 16px;margin-top:14px;color:var(--muted);font-size:12px}
   .meta b{color:var(--text);font-weight:600}
+  .meta svg{width:13px;height:13px;vertical-align:-2px;margin-right:4px}
+
+  /* ---------- Discord-статус ---------- */
+  .presence{
+    display:none;margin-top:16px;padding:10px 12px;border-radius:14px;text-align:left;
+    background:rgba(88,101,242,.10);border:1px solid rgba(88,101,242,.35);
+    grid-template-columns:40px 1fr;gap:10px;align-items:center;font-size:12px;
+  }
+  .presence.on{display:grid}
+  .presence .p-ico{width:40px;height:40px;border-radius:10px;object-fit:cover;background:rgba(88,101,242,.25);display:grid;place-items:center}
+  .presence .p-ico svg{width:22px;height:22px;color:#8f9bff}
+  .presence .p-top{color:#aab4ff;font-weight:600}
+  .presence .p-sub{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
   /* ---------- плеер ---------- */
   .player{
-    margin-top:22px;padding:12px;border-radius:16px;
-    background:rgba(6,5,16,.55);border:1px solid var(--line);
-    display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;text-align:left;
+    position:relative;overflow:hidden;margin-top:18px;padding:12px;border-radius:16px;
+    background:rgba(6,5,16,.6);border:1px solid var(--line);text-align:left;
   }
+  #viz{position:absolute;inset:0;width:100%;height:100%;opacity:.55;pointer-events:none}
+  .p-row{position:relative;display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center}
   .cover{width:56px;height:56px;border-radius:10px;object-fit:cover;box-shadow:0 0 18px rgba(165,91,255,.45)}
   .playing .cover{animation:pulse 1.8s ease-in-out infinite}
   @keyframes pulse{50%{box-shadow:0 0 30px rgba(62,244,255,.7)}}
-  .track{min-width:0}
   .t-title{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .t-artist{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .bar{margin-top:8px;height:4px;border-radius:4px;background:rgba(255,255,255,.08);cursor:pointer;position:relative}
-  .bar-fill{position:absolute;inset:0 auto 0 0;width:0;border-radius:inherit;
-    background:linear-gradient(90deg,var(--cyan),var(--violet),var(--pink));box-shadow:0 0 10px var(--cyan)}
+  .bar{margin-top:10px;height:5px;border-radius:4px;background:rgba(255,255,255,.1);cursor:pointer;position:relative;touch-action:none;transition:height .15s}
+  .bar::before{content:"";position:absolute;inset:-9px 0}
+  .bar:hover,.bar.drag{height:7px}
+  .bar:focus-visible{outline:2px solid var(--cyan);outline-offset:4px}
+  .knob{position:absolute;top:50%;left:0;width:14px;height:14px;border-radius:50%;translate:-50% -50%;
+    background:#fff;box-shadow:0 0 10px var(--cyan),0 0 2px #000;opacity:0;transition:opacity .15s,scale .15s;pointer-events:none}
+  .bar:hover .knob,.bar.drag .knob{opacity:1}
+  .bar.drag .knob{scale:1.25}
+  .bar.drag .bar-fill{transition:none}
+  .bar-fill{position:absolute;inset:0 auto 0 0;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--cyan),var(--violet),var(--pink));box-shadow:0 0 10px var(--cyan)}
   .times{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px}
-  .controls{display:flex;flex-direction:column;align-items:center;gap:6px}
+  .p-ctrl{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px}
+  .ib{width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.06);cursor:pointer;display:grid;place-items:center;transition:background .2s,color .2s}
+  .ib:hover{background:rgba(62,244,255,.15);color:var(--cyan)}
+  .ib.on{color:var(--cyan)}
+  .ib svg{width:16px;height:16px}
   .btn{
-    width:40px;height:40px;border-radius:50%;border:0;cursor:pointer;display:grid;place-items:center;
+    width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;display:grid;place-items:center;
     background:linear-gradient(135deg,var(--cyan),var(--violet));color:#07060f;
     box-shadow:0 0 16px rgba(62,244,255,.5);transition:transform .15s;
   }
   .btn:hover{transform:scale(1.08)}
   .btn svg{width:18px;height:18px}
-  .vol{width:64px;accent-color:var(--cyan);height:3px;cursor:pointer}
+  .vol{width:70px;accent-color:var(--cyan);cursor:pointer}
+  .list{position:relative;display:none;margin-top:10px;border-top:1px solid var(--line);padding-top:8px}
+  .list.open{display:block;max-height:230px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(165,91,255,.5) transparent}
+  .li{display:flex;gap:10px;align-items:center;width:100%;padding:7px 8px;border:0;border-radius:8px;background:none;cursor:pointer;text-align:left;font-size:12px}
+  .li:hover{background:rgba(255,255,255,.05)}
+  .li.cur{color:var(--cyan);background:rgba(62,244,255,.08)}
+  .li .n{width:18px;color:var(--muted);text-align:right}
+  .li .tn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .li .a{color:var(--muted);margin-left:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:45%;flex:none}
   .player-note{display:none;font-size:11px;color:var(--orange);margin-top:6px}
   .no-audio .player-note{display:block}
 
   /* ---------- ссылки ---------- */
-  .links{display:flex;justify-content:center;gap:12px;margin-top:20px;flex-wrap:wrap}
+  .links{display:flex;justify-content:center;gap:10px;margin-top:18px;flex-wrap:wrap}
   .link{
-    display:flex;align-items:center;gap:9px;padding:10px 16px;border-radius:14px;
-    background:rgba(255,255,255,.04);border:1px solid var(--line);font-size:13px;
+    display:flex;align-items:center;gap:8px;padding:10px 15px;border-radius:14px;border:1px solid var(--line);
+    background:rgba(255,255,255,.04);font-size:13px;cursor:pointer;
     transition:transform .2s,box-shadow .2s,border-color .2s,color .2s;
   }
   .link svg{width:18px;height:18px}
-  .link.tg:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 22px rgba(62,244,255,.35);transform:translateY(-2px)}
-  .link.gh:hover{border-color:var(--pink);color:var(--pink);box-shadow:0 0 22px rgba(255,79,216,.35);transform:translateY(-2px)}
+  .link:hover{transform:translateY(-2px)}
+  .link.tg:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 22px rgba(62,244,255,.35)}
+  .link.gh:hover{border-color:var(--pink);color:var(--pink);box-shadow:0 0 22px rgba(255,79,216,.35)}
+  .link.ds:hover{border-color:#7c8cff;color:#9aa6ff;box-shadow:0 0 22px rgba(88,101,242,.45)}
+
+  /* ---------- проекты ---------- */
+  .sec-title{margin:24px 0 10px;font-family:Unbounded,sans-serif;font-weight:700;font-size:14px;text-align:left;color:#fff;
+    display:flex;align-items:center;gap:10px}
+  .sec-title::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+  .projects{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;text-align:left}
+  .proj{
+    position:relative;padding:12px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.03);
+    transition:border-color .2s,box-shadow .2s,transform .2s;display:block;
+  }
+  .proj:hover{transform:translateY(-2px);border-color:var(--c);box-shadow:0 0 22px color-mix(in srgb,var(--c) 35%,transparent)}
+  .proj .pt{font-weight:600;font-size:13px;color:#fff;display:flex;align-items:center;gap:6px}
+  .proj .pt::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c);flex:none}
+  .proj .pd{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.45}
+  .proj .tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+  .proj .tags span{font-size:10px;padding:2px 6px;border-radius:6px;background:rgba(255,255,255,.06);color:var(--text)}
 
   footer{margin-top:20px;font-size:11px;color:var(--muted);letter-spacing:.05em}
   footer .heart{color:var(--pink);text-shadow:0 0 8px var(--pink)}
 
-  @media (max-width:420px){
-    .card{padding:28px 18px 18px}
+  /* ---------- toast ---------- */
+  .toast{
+    position:fixed;left:50%;bottom:28px;z-index:60;translate:-50% 20px;opacity:0;pointer-events:none;
+    padding:10px 16px;border-radius:12px;font-size:13px;background:rgba(10,8,24,.9);
+    border:1px solid var(--cyan);box-shadow:0 0 22px rgba(62,244,255,.35);transition:.3s;
+  }
+  .toast.show{opacity:1;translate:-50% 0}
+
+  @media (max-width:440px){
+    .card{padding:28px 16px 18px}
     .name{font-size:30px}
-    .player{grid-template-columns:48px 1fr auto}
-    .cover{width:48px;height:48px}
+    .projects{grid-template-columns:minmax(0,1fr)}
+    .vol{width:54px}
   }
-  @media (prefers-reduced-motion:reduce){
-    *{animation:none!important}
+  /* ---------- ноутбуки и широкие экраны: две колонки ---------- */
+  @media (min-width:900px){
+    main{padding:28px 24px}
+    .card{width:min(980px,100%);display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:0 32px;padding:32px 32px 18px;align-items:start}
+    .col-a{align-self:center}
+    .col-b .player{margin-top:0}
+    .col-b .list{display:block;max-height:clamp(150px,calc(100vh - 470px),420px)}
+    .col-b #listBtn{display:none}
+    footer{grid-column:1/-1}
   }
+  /* невысокие экраны ноутбуков (1366×768, 1280×720, 1920×1080 с масштабом 125–150%) */
+  @media (min-width:900px) and (max-height:820px){
+    main{padding:16px 20px}
+    .card{padding:22px 26px 14px}
+    .avatar-wrap{width:104px;height:104px;margin-bottom:14px}
+    .name{font-size:32px}
+    .sec-title{margin-top:16px}
+    .proj{padding:10px}
+    footer{margin-top:12px}
+    .col-b .list{max-height:clamp(120px,calc(100vh - 420px),360px)}
+  }
+  @media (min-width:900px) and (max-height:680px){
+    .avatar-wrap{width:88px;height:88px}
+    .name{font-size:28px}
+    .typing{margin-top:6px}
+    .presence{margin-top:10px}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
 <body>
@@ -236,139 +291,353 @@
 
   <main>
     <div class="card" id="card">
+     <div class="col col-a">
       <div class="avatar-wrap">
         <img class="avatar" src="avatar.gif" alt="TTcux">
-        <span class="status" title="online"></span>
+        <span class="status" id="status" title="offline"></span>
       </div>
 
       <div class="name"><span class="glitch" data-text="TTcux">TTcux</span><span class="badge">staff</span></div>
-
       <div class="typing"><span class="prompt">&gt; </span><span id="typed"></span><span class="caret"></span></div>
 
       <div class="meta">
-        <span>👁 <b id="views">—</b></span>
-        <span>📍 <b>RU</b></span>
-        <span>🕒 <b id="clock">--:--</b></span>
+        <span title="Просмотры страницы"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg><b id="views">—</b></span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg><b>RU</b></span>
+        <span title="Время по МСК"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><b id="clock">--:--</b></span>
       </div>
 
-      <div class="player" id="player">
-        <img class="cover" src="cover.jpg" alt="">
-        <div class="track">
-          <div class="t-title">SPACE! (Super Slowed)</div>
-          <div class="t-artist">NAOMI, DRAWMEDEATH</div>
-          <div class="bar" id="bar"><div class="bar-fill" id="fill"></div></div>
-          <div class="times"><span id="cur">0:00</span><span id="dur">0:00</span></div>
-          <div class="player-note">добавь файл music.mp3 в репозиторий</div>
+      <!-- Discord-статус (появляется, если указан DISCORD_ID) -->
+      <div class="presence" id="presence">
+        <div class="p-ico" id="p-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.6 1.3a18.3 18.3 0 0 0-5.5 0L8.6 3a19.7 19.7 0 0 0-4.9 1.5C.6 9.1-.3 13.7.1 18.2a19.9 19.9 0 0 0 6 3l1.3-2.1c-.7-.3-1.4-.6-2-1l.5-.4a14.2 14.2 0 0 0 12.2 0l.5.4c-.6.4-1.3.7-2 1l1.3 2.1a19.8 19.8 0 0 0 6-3c.5-5.2-.8-9.7-3.6-13.8zM8 15.4c-1.2 0-2.2-1.1-2.2-2.4S6.8 10.6 8 10.6s2.2 1.1 2.2 2.4-1 2.4-2.2 2.4zm8 0c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4z"/></svg></div>
+        <div>
+          <div class="p-top" id="p-top">Discord</div>
+          <div class="p-sub" id="p-sub">загрузка…</div>
         </div>
-        <div class="controls">
+      </div>
+
+      <div class="links" id="links">
+        <a class="link tg" id="tg" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.6-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.1 1.8 11.6c-1-.3-1-1 .2-1.5L20.6 3c.8-.3 1.6.2 1.3 1.3z"/></svg>
+          Telegram
+        </a>
+        <a class="link gh" id="gh" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.9 10.9c.6.1.8-.2.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0C17.3 4.7 18.3 5 18.3 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.2c0 .3.2.7.8.6A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"/></svg>
+          GitHub
+        </a>
+        <button class="link ds" id="ds" type="button" title="Скопировать ник Discord">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.6 1.3a18.3 18.3 0 0 0-5.5 0L8.6 3a19.7 19.7 0 0 0-4.9 1.5C.6 9.1-.3 13.7.1 18.2a19.9 19.9 0 0 0 6 3l1.3-2.1c-.7-.3-1.4-.6-2-1l.5-.4a14.2 14.2 0 0 0 12.2 0l.5.4c-.6.4-1.3.7-2 1l1.3 2.1a19.8 19.8 0 0 0 6-3c.5-5.2-.8-9.7-3.6-13.8zM8 15.4c-1.2 0-2.2-1.1-2.2-2.4S6.8 10.6 8 10.6s2.2 1.1 2.2 2.4-1 2.4-2.2 2.4zm8 0c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4z"/></svg>
+          Discord
+        </button>
+      </div>
+
+     </div>
+     <div class="col col-b">
+      <!-- плеер -->
+      <div class="player" id="player">
+        <canvas id="viz"></canvas>
+        <div class="p-row">
+          <img class="cover" id="cover" src="cover.jpg" alt="">
+          <div>
+            <div class="t-title" id="t-title">—</div>
+            <div class="t-artist" id="t-artist">—</div>
+            <div class="bar" id="bar" role="slider" aria-label="перемотка" tabindex="0"><div class="bar-fill" id="fill"></div><div class="knob" id="knob"></div></div>
+            <div class="times"><span id="cur">0:00</span><span id="dur">0:00</span></div>
+            <div class="player-note">файл трека не найден</div>
+          </div>
+        </div>
+        <div class="p-ctrl">
+          <button class="ib" id="shuffle" aria-label="перемешать" title="Перемешать"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg></button>
+          <button class="ib" id="prev" aria-label="предыдущий"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zM9.5 12 18 18V6z"/></svg></button>
           <button class="btn" id="play" aria-label="play/pause">
             <svg id="ic-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             <svg id="ic-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
           </button>
+          <button class="ib" id="next" aria-label="следующий"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/></svg></button>
+          <button class="ib" id="listBtn" aria-label="список треков" title="Плейлист"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h13M3 12h13M3 18h9M19 15v6M16 18h6"/></svg></button>
           <input class="vol" id="vol" type="range" min="0" max="1" step="0.01" value="0.5" aria-label="громкость">
         </div>
+        <div class="list" id="list"></div>
       </div>
 
-      <div class="links">
-        <a class="link tg" href="https://t.me/Ser_Development" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.6-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.1 1.8 11.6c-1-.3-1-1 .2-1.5L20.6 3c.8-.3 1.6.2 1.3 1.3z"/></svg>
-          Telegram
-        </a>
-        <a class="link gh" href="https://github.com/TTcux1" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.9 10.9c.6.1.8-.2.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0C17.3 4.7 18.3 5 18.3 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.2c0 .3.2.7.8.6A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"/></svg>
-          GitHub
-        </a>
-      </div>
+      <div class="proj-sec">
+      <div class="sec-title">Проекты</div>
+      <div class="projects" id="projects"></div>
 
+      </div>
+     </div>
       <footer>made with TTcux <span class="heart">&lt;3</span></footer>
     </div>
   </main>
 
-  <audio id="audio" src="music.mp3" preload="metadata" loop></audio>
+  <div class="toast" id="toast"></div>
+  <audio id="audio" preload="metadata"></audio>
 
 <script>
-(() => {
-  /* ===== вход ===== */
-  const gate = document.getElementById('gate');
-  const audio = document.getElementById('audio');
-  const player = document.getElementById('player');
-  let entered = false;
-  gate.addEventListener('click', () => {
-    if (entered) return;
-    entered = true;
-    gate.classList.add('hide');
-    document.body.classList.add('entered');
-    audio.volume = vol.value;
-    audio.play().catch(() => {});
-    startTyping();
+/* =====================================================================
+   НАСТРОЙКИ — всё, что нужно менять, находится здесь
+   ===================================================================== */
+const CONFIG = {
+  telegram: 'GC_Serega',               // ник Telegram без @
+  github:   'TTcux1',                  // ник GitHub
+  discordName: '_ttcux_',                   // ник Discord для копирования (пусто = кнопка скрыта)
+  discordId:   '941343269869219840',                     // числовой ID Discord для статуса через Lanyard (пусто = блок скрыт)
+  counterKey:  'ttcux1-github-io-views', // уникальный ключ счётчика просмотров
+
+  // Плейлист: file — путь к mp3 в репозитории, cover — обложка (можно cover.jpg)
+  playlist: [
+    { title: 'SPACE! (Super Slowed)', artist: 'NAOMI, DRAWMEDEATH', file: 'music.mp3', cover: 'cover.jpg' },
+    { title: 'MATUSHKA ULTRAFUNK', artist: 'satirin, FUNK DEMON, Evo', file: 'music/matushka-ultrafunk.mp3', cover: 'covers/matushka-ultrafunk.jpg' },
+    { title: 'Montagem Supersonic (Slowed)', artist: 'KHAOS & Jmilton', file: 'music/montagem-supersonic.mp3', cover: 'cover.jpg' },
+    { title: 'Odnogo (legendaris ultrafunk remix)', artist: 'DJ Bratt', file: 'music/odnogo.mp3', cover: 'covers/odnogo.jpg' },
+    { title: 'Raya (Slowed)', artist: 'Zericxxn', file: 'music/raya-slowed.mp3', cover: 'covers/raya-slowed.jpg' },
+    { title: 'ELECTROSOULS', artist: 'Hardx, NX!ZE', file: 'music/electrosouls.mp3', cover: 'cover.jpg' },
+    { title: 'Эй', artist: 'Кишлак', file: 'music/kishlak-ej.mp3', cover: 'covers/kishlak-ej.jpg' },
+    { title: 'Дрочу на твои фото', artist: 'Кишлак', file: 'music/kishlak-foto.mp3', cover: 'covers/kishlak-foto.jpg' },
+    { title: 'Накуримся, напьемся', artist: 'Кишлак', file: 'music/kishlak-nakurimsya.mp3', cover: 'covers/kishlak-nakurimsya.jpg' },
+    { title: 'Музыка', artist: 'Кишлак', file: 'music/kishlak-muzyka.mp3', cover: 'covers/kishlak-muzyka.jpg' },
+    { title: 'Blame it to We', artist: 'FreezyBitch, Hoodspire G, voideclipse', file: 'music/blame-it-to-we.mp3', cover: 'covers/blame-it-to-we.jpg' },
+    // { title: 'Название', artist: 'Исполнитель', file: 'music/track2.mp3', cover: 'cover.jpg' },
+  ],
+
+  // Проекты: c — цвет точки/подсветки, url — ссылка (можно '' — тогда карточка без ссылки)
+  projects: [
+    { name: 'MinPrice', desc: 'Мод минимальных цен для GravityVending · 1.7.10 / 1.20.1 / 1.21.1', tags: ['Mod', 'Java'], c: '#ff9a3c', url: 'https://github.com/TTcux1/MinPrice' },
+  ],
+
+  phrases: ['Developer', 'Разработчик', 'DEV · staff', 'пишу код под дождём', 'welcome to my page'],
+};
+/* ===================================================================== */
+
+{
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  /* ----- toast ----- */
+  let tt;
+  const toast = msg => { const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('show'), 2000); };
+
+  /* ----- ссылки ----- */
+  $('tg').href = 'https://t.me/' + CONFIG.telegram;
+  $('gh').href = 'https://github.com/' + CONFIG.github;
+  if (!CONFIG.discordName) $('ds').style.display = 'none';
+  $('ds').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(CONFIG.discordName); toast('Ник Discord скопирован: ' + CONFIG.discordName); }
+    catch (e) { toast('Discord: ' + CONFIG.discordName); }
   });
 
-  /* ===== печатающийся текст ===== */
-  const phrases = ['Developer', 'Разработчик', 'DEV · staff', 'пишу код под дождём', 'welcome to my page'];
-  const typed = document.getElementById('typed');
+  /* ----- проекты ----- */
+  $('projects').innerHTML = CONFIG.projects.map(p => {
+    const tag = p.url ? 'a' : 'div';
+    const href = p.url ? ` href="${esc(p.url)}" target="_blank" rel="noopener"` : '';
+    return `<${tag} class="proj" style="--c:${esc(p.c)}"${href}>
+      <div class="pt">${esc(p.name)}</div>
+      <div class="pd">${esc(p.desc)}</div>
+      <div class="tags">${p.tags.map(t => `<span>${esc(t)}</span>`).join('')}</div>
+    </${tag}>`;
+  }).join('');
+
+  /* ----- печатающийся текст ----- */
+  const typed = $('typed');
   function startTyping() {
     let p = 0, i = 0, del = false;
     (function tick() {
-      const word = phrases[p];
+      const word = CONFIG.phrases[p];
       typed.textContent = word.slice(0, i);
       if (!del && i < word.length) { i++; setTimeout(tick, 70 + Math.random() * 60); }
       else if (!del) { del = true; setTimeout(tick, 1600); }
       else if (i > 0) { i--; setTimeout(tick, 35); }
-      else { del = false; p = (p + 1) % phrases.length; setTimeout(tick, 300); }
+      else { del = false; p = (p + 1) % CONFIG.phrases.length; setTimeout(tick, 300); }
     })();
   }
 
-  /* ===== плеер ===== */
-  const playBtn = document.getElementById('play');
-  const icPlay = document.getElementById('ic-play'), icPause = document.getElementById('ic-pause');
-  const fill = document.getElementById('fill'), bar = document.getElementById('bar');
-  const cur = document.getElementById('cur'), dur = document.getElementById('dur');
-  const vol = document.getElementById('vol');
+  /* ----- плеер / плейлист ----- */
+  const audio = $('audio'), player = $('player');
+  const list = CONFIG.playlist;
+  let idx = 0, shuffle = false;
   const fmt = s => isFinite(s) ? Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0') : '0:00';
+
+  function renderList() {
+    $('list').innerHTML = list.map((t, i) =>
+      `<button class="li${i === idx ? ' cur' : ''}" data-i="${i}"><span class="n">${i + 1}</span><span class="tn">${esc(t.title)}</span><span class="a">${esc(t.artist)}</span></button>`
+    ).join('');
+  }
+  function load(i, autoplay) {
+    idx = (i + list.length) % list.length;
+    const t = list[idx];
+    player.classList.remove('no-audio');
+    audio.src = t.file;
+    $('cover').src = t.cover || 'cover.jpg';
+    $('t-title').textContent = t.title;
+    $('t-artist').textContent = t.artist;
+    $('fill').style.width = $('knob').style.left = '0';
+    $('cur').textContent = '0:00';
+    renderList();
+    if (autoplay) play();
+  }
+  const pick = () => shuffle && list.length > 1 ? (idx + 1 + Math.floor(Math.random() * (list.length - 1))) % list.length : idx + 1;
+  function play() { initViz(); audio.play().catch(() => {}); }
   const sync = () => {
     const on = !audio.paused;
-    icPlay.style.display = on ? 'none' : '';
-    icPause.style.display = on ? '' : 'none';
+    $('ic-play').style.display = on ? 'none' : '';
+    $('ic-pause').style.display = on ? '' : 'none';
     player.classList.toggle('playing', on);
   };
-  playBtn.onclick = () => audio.paused ? audio.play().catch(() => {}) : audio.pause();
+  $('play').onclick = () => audio.paused ? play() : audio.pause();
+  $('next').onclick = () => load(pick(), true);
+  $('prev').onclick = () => audio.currentTime > 3 ? (audio.currentTime = 0) : load(idx - 1, true);
+  $('shuffle').onclick = () => { shuffle = !shuffle; $('shuffle').classList.toggle('on', shuffle); toast(shuffle ? 'Перемешивание: вкл' : 'Перемешивание: выкл'); };
+  $('listBtn').onclick = () => { $('list').classList.toggle('open'); $('listBtn').classList.toggle('on'); };
+  $('list').addEventListener('click', e => { const b = e.target.closest('.li'); if (b) load(+b.dataset.i, true); });
   audio.addEventListener('play', sync);
   audio.addEventListener('pause', sync);
-  audio.addEventListener('loadedmetadata', () => dur.textContent = fmt(audio.duration));
+  audio.addEventListener('ended', () => list.length > 1 ? load(pick(), true) : (audio.currentTime = 0, play()));
+  audio.addEventListener('loadedmetadata', () => $('dur').textContent = fmt(audio.duration));
   audio.addEventListener('timeupdate', () => {
-    cur.textContent = fmt(audio.currentTime);
-    fill.style.width = (audio.currentTime / audio.duration * 100 || 0) + '%';
+    if (seeking) return;
+    $('cur').textContent = fmt(audio.currentTime);
+    $('fill').style.width = $('knob').style.left = (audio.currentTime / audio.duration * 100 || 0) + '%';
   });
   audio.addEventListener('error', () => player.classList.add('no-audio'));
-  bar.onclick = e => {
-    const r = bar.getBoundingClientRect();
-    if (audio.duration) audio.currentTime = (e.clientX - r.left) / r.width * audio.duration;
+  /* перемотка: клик или перетаскивание с зажатой ЛКМ / пальцем */
+  const bar = $('bar');
+  let seeking = false;
+  const ratioAt = x => { const r = bar.getBoundingClientRect(); return Math.min(1, Math.max(0, (x - r.left) / r.width)); };
+  const showAt = k => {
+    $('fill').style.width = $('knob').style.left = k * 100 + '%';
+    $('cur').textContent = fmt(k * (audio.duration || 0));
   };
-  vol.oninput = () => audio.volume = vol.value;
+  bar.addEventListener('pointerdown', e => {
+    if (!audio.duration) return;
+    seeking = true; bar.classList.add('drag');
+    bar.setPointerCapture(e.pointerId);
+    showAt(ratioAt(e.clientX));
+    e.preventDefault();
+  });
+  bar.addEventListener('pointermove', e => { if (seeking) showAt(ratioAt(e.clientX)); });
+  const endSeek = e => {
+    if (!seeking) return;
+    seeking = false; bar.classList.remove('drag');
+    audio.currentTime = ratioAt(e.clientX) * audio.duration;
+  };
+  bar.addEventListener('pointerup', endSeek);
+  bar.addEventListener('pointercancel', () => { seeking = false; bar.classList.remove('drag'); });
+  bar.addEventListener('keydown', e => {
+    if (!audio.duration) return;
+    if (e.key === 'ArrowRight') audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
+    if (e.key === 'ArrowLeft') audio.currentTime = Math.max(0, audio.currentTime - 5);
+  });
+  const vol = $('vol');
+  try { const v = localStorage.getItem('ttcux_vol'); if (v !== null) vol.value = v; } catch (e) {}
+  audio.volume = vol.value;
+  vol.oninput = () => { audio.volume = vol.value; try { localStorage.setItem('ttcux_vol', vol.value); } catch (e) {} };
+  load(0, false);
 
-  /* ===== часы (МСК) ===== */
-  const clock = document.getElementById('clock');
-  const upd = () => clock.textContent = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Moscow' });
+  /* ----- визуализатор ----- */
+  let analyser, freq;
+  const viz = $('viz'), vx = viz.getContext('2d');
+  function initViz() {
+    if (analyser) return;
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      const ac = new AC();
+      const src = ac.createMediaElementSource(audio);
+      analyser = ac.createAnalyser();
+      analyser.fftSize = 128;
+      analyser.smoothingTimeConstant = .8;
+      src.connect(analyser); analyser.connect(ac.destination);
+      freq = new Uint8Array(analyser.frequencyBinCount);
+      ac.resume();
+      drawViz();
+    } catch (e) {}
+  }
+  function drawViz() {
+    const W = viz.width = viz.clientWidth * devicePixelRatio, H = viz.height = viz.clientHeight * devicePixelRatio;
+    analyser.getByteFrequencyData(freq);
+    vx.clearRect(0, 0, W, H);
+    const n = 40, bw = W / n;
+    const g = vx.createLinearGradient(0, 0, W, 0);
+    g.addColorStop(0, '#3ef4ff'); g.addColorStop(.5, '#a55bff'); g.addColorStop(1, '#ff4fd8');
+    vx.fillStyle = g;
+    for (let i = 0; i < n; i++) {
+      const v = freq[Math.floor(i * freq.length / n * .8)] / 255;
+      const h = v * H * .9;
+      vx.globalAlpha = .25 + v * .5;
+      vx.fillRect(i * bw + 1, H - h, bw - 2, h);
+    }
+    vx.globalAlpha = 1;
+    requestAnimationFrame(drawViz);
+  }
+
+  /* ----- вход ----- */
+  let entered = false;
+  $('gate').addEventListener('click', () => {
+    if (entered) return;
+    entered = true;
+    $('gate').classList.add('hide');
+    document.body.classList.add('entered');
+    play();
+    startTyping();
+  });
+
+  /* ----- часы (МСК) ----- */
+  const upd = () => $('clock').textContent = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Moscow' });
   upd(); setInterval(upd, 10000);
 
-  /* ===== счётчик визитов (локально, на этом устройстве) ===== */
-  try {
-    const n = (+localStorage.getItem('ttcux_views') || 0) + 1;
-    localStorage.setItem('ttcux_views', n);
-    document.getElementById('views').textContent = n;
-  } catch (e) {}
+  /* ----- счётчик просмотров (общий для всех посетителей) ----- */
+  (async () => {
+    const base = 'https://countapi.mileshilliard.com/api/v1/';
+    let first = true;
+    try { first = !sessionStorage.getItem('ttcux_seen'); sessionStorage.setItem('ttcux_seen', '1'); } catch (e) {}
+    try {
+      const r = await fetch(base + (first ? 'hit/' : 'get/') + CONFIG.counterKey);
+      const d = await r.json();
+      const v = d.value ?? d.count;
+      if (v !== undefined) $('views').textContent = Number(v).toLocaleString('ru-RU');
+    } catch (e) { /* сервис недоступен — остаётся «—» */ }
+  })();
 
-  /* ===== 3D-наклон карточки ===== */
-  const card = document.getElementById('card');
+  /* ----- Discord-статус через Lanyard ----- */
+  const statusText = { online: 'в сети', idle: 'отошёл', dnd: 'не беспокоить', offline: 'не в сети' };
+  async function presence() {
+    if (!CONFIG.discordId) return;
+    try {
+      const r = await fetch('https://api.lanyard.rest/v1/users/' + CONFIG.discordId);
+      const j = await r.json();
+      if (!j.success) return;
+      const d = j.data, s = d.discord_status || 'offline';
+      $('status').dataset.s = s;
+      $('status').title = statusText[s] || s;
+      $('presence').classList.add('on');
+      const act = (d.activities || []).find(a => a.type !== 4);
+      const custom = (d.activities || []).find(a => a.type === 4);
+      const ico = $('p-ico');
+      if (d.listening_to_spotify && d.spotify) {
+        $('p-top').textContent = 'Слушает Spotify';
+        $('p-sub').textContent = d.spotify.song + ' — ' + d.spotify.artist;
+        ico.innerHTML = ''; const im = new Image(); im.className = 'p-ico'; im.src = d.spotify.album_art_url; ico.appendChild(im);
+      } else if (act) {
+        const verb = { 0: 'Играет в', 1: 'Стримит', 2: 'Слушает', 3: 'Смотрит', 5: 'Соревнуется в' }[act.type] || 'Занят:';
+        $('p-top').textContent = verb + ' ' + act.name;
+        $('p-sub').textContent = [act.details, act.state].filter(Boolean).join(' · ') || statusText[s];
+      } else {
+        $('p-top').textContent = 'Discord · ' + (statusText[s] || s);
+        $('p-sub').textContent = custom?.state || 'ничем не занят';
+      }
+    } catch (e) {}
+  }
+  presence(); setInterval(presence, 30000);
+
+  /* ----- 3D-наклон карточки ----- */
+  const card = $('card');
   if (matchMedia('(pointer:fine)').matches) {
     addEventListener('mousemove', e => {
       const x = e.clientX / innerWidth - .5, y = e.clientY / innerHeight - .5;
-      card.style.transform = `perspective(900px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg)`;
+      card.style.transform = `perspective(1000px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg)`;
     });
   }
 
-  /* ===== частицы: дождь + неоновые искры + след курсора ===== */
-  const cv = document.getElementById('fx'), cx = cv.getContext('2d');
+  /* ----- частицы: дождь + неоновые искры + след курсора ----- */
+  const cv = $('fx'), cx = cv.getContext('2d');
   const colors = ['#3ef4ff', '#a55bff', '#ff4fd8', '#ff9a3c'];
   let W, H, rain = [], sparks = [], trail = [];
   const resize = () => {
@@ -392,7 +661,6 @@
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   (function loop() {
     cx.clearRect(0, 0, W, H);
-    // дождь
     cx.strokeStyle = 'rgba(150,200,255,.22)'; cx.lineWidth = devicePixelRatio;
     cx.beginPath();
     for (const d of rain) {
@@ -401,7 +669,6 @@
       if (d.y > H) { d.y = -d.l; d.x = Math.random() * W * 1.1; }
     }
     cx.stroke();
-    // искры
     for (const s of sparks) {
       s.a += .03; s.x += s.vx; s.y += s.vy;
       if (s.y < -10) { s.y = H + 10; s.x = Math.random() * W; }
@@ -409,7 +676,6 @@
       cx.shadowBlur = 14; cx.shadowColor = s.c; cx.fillStyle = s.c;
       cx.beginPath(); cx.arc(s.x, s.y, s.r, 0, 6.28); cx.fill();
     }
-    // след курсора
     for (const t of trail) {
       t.x += t.vx; t.y += t.vy; t.life -= .025;
       if (t.life <= 0) continue;
@@ -420,7 +686,7 @@
     cx.globalAlpha = 1; cx.shadowBlur = 0;
     if (!reduce) requestAnimationFrame(loop);
   })();
-})();
+}
 </script>
 </body>
 </html>
