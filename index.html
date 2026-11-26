@@ -5,10 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TTcux · staff</title>
 <meta name="description" content="TTcux — developer / разработчик">
+<!-- Превью ссылки в Telegram / Discord / VK. Адреса должны быть ПОЛНЫМИ -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TTcux">
+<meta property="og:url" content="https://ttcux1.github.io/">
 <meta property="og:title" content="TTcux · staff">
-<meta property="og:description" content="Developer · Разработчик">
-<meta property="og:image" content="cover.jpg">
-<meta name="theme-color" content="#07060f">
+<meta property="og:description" content="Developer · Разработчик · музыка, проекты и контакты">
+<meta property="og:image" content="https://ttcux1.github.io/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ru_RU">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ttcux1.github.io/og.jpg">
+<meta name="theme-color" content="#3ef4ff">
 <link rel="icon" href="cover.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -97,14 +106,14 @@
     -webkit-mask-composite:xor;mask-composite:exclude;opacity:.7;pointer-events:none;
   }
 
-  .avatar-wrap{position:relative;width:132px;height:132px;margin:0 auto 18px}
+  .avatar-wrap{--beat:0;position:relative;width:132px;height:132px;margin:0 auto 18px;transform:scale(calc(1 + var(--beat) * .07))}
   .avatar-wrap::before,.avatar-wrap::after{
     content:"";position:absolute;border-radius:50%;
     background:conic-gradient(var(--cyan),var(--violet),var(--pink),var(--orange),var(--cyan));
     animation:spin 6s linear infinite;
   }
-  .avatar-wrap::before{inset:-5px;filter:blur(1px)}
-  .avatar-wrap::after{inset:-14px;filter:blur(22px);opacity:.55;z-index:-1}
+  .avatar-wrap::before{inset:calc(-5px - var(--beat) * 4px);filter:blur(1px) brightness(calc(1 + var(--beat) * .8))}
+  .avatar-wrap::after{inset:calc(-14px - var(--beat) * 14px);filter:blur(22px);opacity:calc(.55 + var(--beat) * .45);z-index:-1}
   .avatar{position:relative;width:100%;height:100%;border-radius:50%;object-fit:cover;border:4px solid var(--bg);display:block}
   .status{
     position:absolute;right:6px;bottom:6px;width:20px;height:20px;border-radius:50%;
@@ -145,14 +154,60 @@
   /* ---------- Discord-статус ---------- */
   .presence{
     display:none;margin-top:16px;padding:10px 12px;border-radius:14px;text-align:left;
-    background:rgba(88,101,242,.10);border:1px solid rgba(88,101,242,.35);
-    grid-template-columns:40px 1fr;gap:10px;align-items:center;font-size:12px;
+    background:rgba(88,101,242,.10);border:1px solid rgba(88,101,242,.35);font-size:12px;
   }
-  .presence.on{display:grid}
-  .presence .p-ico{width:40px;height:40px;border-radius:10px;object-fit:cover;background:rgba(88,101,242,.25);display:grid;place-items:center}
-  .presence .p-ico svg{width:22px;height:22px;color:#8f9bff}
-  .presence .p-top{color:#aab4ff;font-weight:600}
-  .presence .p-sub{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .presence.on{display:block}
+  .p-head{display:grid;grid-template-columns:40px minmax(0,1fr) 18px;gap:10px;align-items:center}
+  .p-av{position:relative;width:40px;height:40px}
+  .p-av img{width:40px;height:40px;border-radius:50%;object-fit:cover;background:rgba(88,101,242,.3);display:block}
+  .p-dot{position:absolute;right:-2px;bottom:-2px;width:14px;height:14px;border-radius:50%;border:3px solid #15122b;background:#747f8d}
+  .p-dot[data-s=online]{background:#3dffa0}.p-dot[data-s=idle]{background:#f0b232}.p-dot[data-s=dnd]{background:#f23f43}
+  .p-name{display:flex;gap:6px;align-items:baseline;white-space:nowrap;overflow:hidden}
+  .p-name b{color:#fff;font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis}
+  .p-name span{color:var(--muted);font-size:11px}
+  .p-custom{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+  .p-custom:empty{display:none}
+  .p-logo{width:18px;height:18px;color:#8f9bff;opacity:.7}
+  .p-act{display:none;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid rgba(88,101,242,.25)}
+  .p-act.on{display:grid}
+  .p-img{width:52px;height:52px;border-radius:10px;overflow:hidden;background:rgba(88,101,242,.25);display:grid;place-items:center;color:#8f9bff}
+  .p-img img{width:100%;height:100%;object-fit:cover;display:block}
+  .p-img svg{width:26px;height:26px}
+  .p-top{color:#c9d0ff;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .p-sub{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .p-sub:empty,.p-el:empty{display:none}
+  .p-el{color:#3dffa0;font-size:11px;margin-top:2px}
+  .p-prog{display:none;margin-top:6px}
+  .p-prog.on{display:block}
+  .p-bar{height:4px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden}
+  .p-bar i{display:block;height:100%;width:0;background:#1ed760;box-shadow:0 0 8px #1ed760}
+  .p-times{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:3px}
+
+  /* ---------- значки ---------- */
+  .badges{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .bdg{position:relative;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;
+    color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);border:1px solid color-mix(in srgb,var(--c) 45%,transparent);
+    transition:transform .2s,box-shadow .2s}
+  .bdg svg{width:16px;height:16px;filter:drop-shadow(0 0 4px var(--c))}
+  .bdg:hover,.bdg:focus-visible{transform:translateY(-2px);box-shadow:0 0 16px color-mix(in srgb,var(--c) 55%,transparent);outline:none}
+  .bdg::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;translate:-50% 4px;white-space:nowrap;
+    padding:5px 9px;border-radius:8px;font-size:11px;color:#fff;background:rgba(10,8,24,.95);border:1px solid var(--c);
+    box-shadow:0 0 12px color-mix(in srgb,var(--c) 40%,transparent);opacity:0;pointer-events:none;transition:.15s;z-index:5}
+  .bdg:hover::after,.bdg:focus-visible::after{opacity:1;translate:-50% 0}
+
+  /* ---------- неоновый курсор ---------- */
+  .cur-dot,.cur-ring{position:fixed;left:0;top:0;z-index:200;pointer-events:none;border-radius:50%;opacity:0;transition:opacity .2s}
+  .cur-dot{width:6px;height:6px;margin:-3px 0 0 -3px;background:#fff;box-shadow:0 0 6px var(--cyan),0 0 14px var(--cyan)}
+  .cur-ring{width:34px;height:34px;margin:-17px 0 0 -17px;border:1.5px solid var(--cyan);box-shadow:0 0 12px rgba(62,244,255,.5),inset 0 0 10px rgba(62,244,255,.25);
+    transition:opacity .2s,width .2s,height .2s,margin .2s,border-color .2s,box-shadow .2s}
+  .cur-ring.hover{width:52px;height:52px;margin:-26px 0 0 -26px;border-color:var(--pink);box-shadow:0 0 18px rgba(255,79,216,.6),inset 0 0 12px rgba(255,79,216,.3)}
+  .cur-ring.down{width:24px;height:24px;margin:-12px 0 0 -12px}
+  body.neon-cursor,body.neon-cursor *{cursor:none!important}
+  body.neon-cursor .cur-dot.show,body.neon-cursor .cur-ring.show{opacity:1}
+
+  .keys{display:block;margin-top:6px;font-size:10px;color:var(--muted);opacity:.75}
+  .keys kbd{font:inherit;padding:1px 5px;border-radius:4px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--text)}
+  @media (pointer:coarse),(max-width:600px){.keys{display:none}}
 
   /* ---------- плеер ---------- */
   .player{
@@ -293,11 +348,12 @@
     <div class="card" id="card">
      <div class="col col-a">
       <div class="avatar-wrap">
-        <img class="avatar" src="avatar.gif" alt="TTcux">
+        <video class="avatar" autoplay muted loop playsinline poster="cover.jpg" aria-label="TTcux"><source src="avatar.webm" type="video/webm"><source src="avatar.mp4" type="video/mp4"></video>
         <span class="status" id="status" title="offline"></span>
       </div>
 
       <div class="name"><span class="glitch" data-text="TTcux">TTcux</span><span class="badge">staff</span></div>
+      <div class="badges" id="badges"></div>
       <div class="typing"><span class="prompt">&gt; </span><span id="typed"></span><span class="caret"></span></div>
 
       <div class="meta">
@@ -308,10 +364,23 @@
 
       <!-- Discord-статус (появляется, если указан DISCORD_ID) -->
       <div class="presence" id="presence">
-        <div class="p-ico" id="p-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.6 1.3a18.3 18.3 0 0 0-5.5 0L8.6 3a19.7 19.7 0 0 0-4.9 1.5C.6 9.1-.3 13.7.1 18.2a19.9 19.9 0 0 0 6 3l1.3-2.1c-.7-.3-1.4-.6-2-1l.5-.4a14.2 14.2 0 0 0 12.2 0l.5.4c-.6.4-1.3.7-2 1l1.3 2.1a19.8 19.8 0 0 0 6-3c.5-5.2-.8-9.7-3.6-13.8zM8 15.4c-1.2 0-2.2-1.1-2.2-2.4S6.8 10.6 8 10.6s2.2 1.1 2.2 2.4-1 2.4-2.2 2.4zm8 0c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4z"/></svg></div>
-        <div>
-          <div class="p-top" id="p-top">Discord</div>
-          <div class="p-sub" id="p-sub">загрузка…</div>
+        <div class="p-head">
+          <div class="p-av"><img id="p-avatar" alt="" onerror="this.onerror=null;this.src='cover.jpg'"><span class="p-dot" id="p-dot"></span></div>
+          <div class="p-who">
+            <div class="p-name"><b id="p-name">Discord</b><span id="p-stat"></span></div>
+            <div class="p-custom" id="p-custom"></div>
+          </div>
+          <svg class="p-logo" viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.6 1.3a18.3 18.3 0 0 0-5.5 0L8.6 3a19.7 19.7 0 0 0-4.9 1.5C.6 9.1-.3 13.7.1 18.2a19.9 19.9 0 0 0 6 3l1.3-2.1c-.7-.3-1.4-.6-2-1l.5-.4a14.2 14.2 0 0 0 12.2 0l.5.4c-.6.4-1.3.7-2 1l1.3 2.1a19.8 19.8 0 0 0 6-3c.5-5.2-.8-9.7-3.6-13.8zM8 15.4c-1.2 0-2.2-1.1-2.2-2.4S6.8 10.6 8 10.6s2.2 1.1 2.2 2.4-1 2.4-2.2 2.4zm8 0c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4z"/></svg>
+        </div>
+        <div class="p-act" id="p-act">
+          <div class="p-img" id="p-img"></div>
+          <div class="p-txt">
+            <div class="p-top" id="p-top"></div>
+            <div class="p-sub" id="p-sub"></div>
+            <div class="p-sub" id="p-sub2"></div>
+            <div class="p-prog" id="p-prog"><div class="p-bar"><i id="p-fill"></i></div><div class="p-times"><span id="p-cur">0:00</span><span id="p-end">0:00</span></div></div>
+            <div class="p-el" id="p-el"></div>
+          </div>
         </div>
       </div>
 
@@ -365,12 +434,13 @@
 
       </div>
      </div>
-      <footer>made with TTcux <span class="heart">&lt;3</span></footer>
+      <footer>made with TTcux <span class="heart">&lt;3</span><span class="keys"><kbd>Пробел</kbd> пауза · <kbd>←</kbd><kbd>→</kbd> перемотка · <kbd>N</kbd>/<kbd>P</kbd> треки · <kbd>↑</kbd><kbd>↓</kbd> громкость · <kbd>M</kbd> звук</span></footer>
     </div>
   </main>
 
   <div class="toast" id="toast"></div>
-  <audio id="audio" preload="metadata"></audio>
+  <div class="cur-ring" id="cur-ring"></div><div class="cur-dot" id="cur-dot"></div>
+  <audio id="audio" preload="none"></audio>
 
 <script>
 /* =====================================================================
@@ -381,7 +451,17 @@ const CONFIG = {
   github:   'TTcux1',                  // ник GitHub
   discordName: '_ttcux_',                   // ник Discord для копирования (пусто = кнопка скрыта)
   discordId:   '941343269869219840',                     // числовой ID Discord для статуса через Lanyard (пусто = блок скрыт)
-  counterKey:  'ttcux1-github-io-views', // уникальный ключ счётчика просмотров
+  goatcounter: 'ttcux',                   // код сайта в GoatCounter (например 'ttcux'), пусто = запасной счётчик
+  counterKey:  'ttcux1-github-io-views', // ключ запасного счётчика (не меняй)
+
+  // Значки под ником. icon: code, java, cube, wrench, server, moon, star, heart, bolt
+  badges: [
+    { tip: 'Developer',     icon: 'code',   c: '#3ef4ff' },
+    { tip: 'Java',          icon: 'java',   c: '#ff9a3c' },
+    { tip: 'Minecraft',     icon: 'cube',   c: '#3dffa0' },
+    { tip: 'Modder',        icon: 'wrench', c: '#a55bff' },
+    { tip: 'Server admin',  icon: 'server', c: '#ff4fd8' },
+  ],
 
   // Плейлист: file — путь к mp3 в репозитории, cover — обложка (можно cover.jpg)
   playlist: [
@@ -404,7 +484,7 @@ const CONFIG = {
     { name: 'MinPrice', desc: 'Мод минимальных цен для GravityVending · 1.7.10 / 1.20.1 / 1.21.1', tags: ['Mod', 'Java'], c: '#ff9a3c', url: 'https://github.com/TTcux1/MinPrice' },
   ],
 
-  phrases: ['Developer', 'Разработчик', 'DEV · staff', 'пишу код под дождём', 'welcome to my page'],
+  phrases: ['Developer', 'Разработчик', 'DEV · staff', 'пишу код под пивом', 'welcome to my page'],
 };
 /* ===================================================================== */
 
@@ -436,6 +516,22 @@ const CONFIG = {
     </${tag}>`;
   }).join('');
 
+  /* ----- значки ----- */
+  const ICONS = {
+    code:   '<path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+    java:   '<path d="M6 10h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM17 11h1.5a2.5 2.5 0 0 1 0 5H17M9 3c-1 1.5 1 2.5 0 4M13 3c-1 1.5 1 2.5 0 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+    cube:   '<path d="m12 2 9 5v10l-9 5-9-5V7zM3 7l9 5 9-5M12 12v10" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+    wrench: '<path d="M14.7 6.3a4 4 0 0 0 5 5l-9.4 9.4a2.1 2.1 0 0 1-3-3zM14.7 6.3 18 3l3 3-3.3 3.3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+    server: '<rect x="3" y="4" width="18" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="3" y="13" width="18" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="7" cy="7.5" r="1.2" fill="currentColor"/><circle cx="7" cy="16.5" r="1.2" fill="currentColor"/>',
+    moon:   '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+    star:   '<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+    heart:  '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+    bolt:   '<path d="M13 2 4 14h7l-1 8 9-12h-7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+  };
+  $('badges').innerHTML = (CONFIG.badges || []).map(b =>
+    `<span class="bdg" tabindex="0" data-tip="${esc(b.tip)}" style="--c:${esc(b.c)}"><svg viewBox="0 0 24 24">${ICONS[b.icon] || ICONS.star}</svg></span>`
+  ).join('');
+
   /* ----- печатающийся текст ----- */
   const typed = $('typed');
   function startTyping() {
@@ -449,6 +545,8 @@ const CONFIG = {
       else { del = false; p = (p + 1) % CONFIG.phrases.length; setTimeout(tick, 300); }
     })();
   }
+
+  let entered = false;
 
   /* ----- плеер / плейлист ----- */
   const audio = $('audio'), player = $('player');
@@ -472,7 +570,25 @@ const CONFIG = {
     $('fill').style.width = $('knob').style.left = '0';
     $('cur').textContent = '0:00';
     renderList();
+    setMediaMeta(t);
     if (autoplay) play();
+  }
+  const abs = u => new URL(u, location.href).href;
+  const ms = 'mediaSession' in navigator ? navigator.mediaSession : null;
+  function setMediaMeta(t) {
+    if (!ms || !window.MediaMetadata) return;
+    try {
+      ms.metadata = new MediaMetadata({
+        title: t.title, artist: t.artist, album: 'TTcux · плейлист',
+        artwork: [{ src: abs(t.cover || 'cover.jpg'), sizes: '200x200', type: 'image/jpeg' }, { src: abs('cover.jpg'), sizes: '320x320', type: 'image/jpeg' }],
+      });
+    } catch (e) {}
+  }
+  const BASE_TITLE = document.title;
+  function setTabTitle() {
+    if (!entered) { document.title = BASE_TITLE; return; }
+    const t = list[idx];
+    document.title = (audio.paused ? '⏸ ' : '▶ ') + t.title + ' · TTcux';
   }
   const pick = () => shuffle && list.length > 1 ? (idx + 1 + Math.floor(Math.random() * (list.length - 1))) % list.length : idx + 1;
   function play() { initViz(); audio.play().catch(() => {}); }
@@ -481,6 +597,8 @@ const CONFIG = {
     $('ic-play').style.display = on ? 'none' : '';
     $('ic-pause').style.display = on ? '' : 'none';
     player.classList.toggle('playing', on);
+    if (ms) try { ms.playbackState = on ? 'playing' : 'paused'; } catch (e) {}
+    setTabTitle();
   };
   $('play').onclick = () => audio.paused ? play() : audio.pause();
   $('next').onclick = () => load(pick(), true);
@@ -491,12 +609,27 @@ const CONFIG = {
   audio.addEventListener('play', sync);
   audio.addEventListener('pause', sync);
   audio.addEventListener('ended', () => list.length > 1 ? load(pick(), true) : (audio.currentTime = 0, play()));
-  audio.addEventListener('loadedmetadata', () => $('dur').textContent = fmt(audio.duration));
+  audio.addEventListener('loadedmetadata', () => { $('dur').textContent = fmt(audio.duration); posState(); });
+  function posState() {
+    if (!ms || !ms.setPositionState || !isFinite(audio.duration)) return;
+    try { ms.setPositionState({ duration: audio.duration, playbackRate: audio.playbackRate, position: Math.min(audio.currentTime, audio.duration) }); } catch (e) {}
+  }
+  if (ms) {
+    const H = (a, f) => { try { ms.setActionHandler(a, f); } catch (e) {} };
+    H('play', () => play());
+    H('pause', () => audio.pause());
+    H('previoustrack', () => $('prev').click());
+    H('nexttrack', () => $('next').click());
+    H('seekbackward', d => { audio.currentTime = Math.max(0, audio.currentTime - (d.seekOffset || 10)); posState(); });
+    H('seekforward', d => { audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + (d.seekOffset || 10)); posState(); });
+    H('seekto', d => { audio.currentTime = d.seekTime; posState(); });
+  }
   audio.addEventListener('timeupdate', () => {
     if (seeking) return;
     $('cur').textContent = fmt(audio.currentTime);
     $('fill').style.width = $('knob').style.left = (audio.currentTime / audio.duration * 100 || 0) + '%';
   });
+  audio.addEventListener('seeked', posState);
   audio.addEventListener('error', () => player.classList.add('no-audio'));
   /* перемотка: клик или перетаскивание с зажатой ЛКМ / пальцем */
   const bar = $('bar');
@@ -521,19 +654,33 @@ const CONFIG = {
   };
   bar.addEventListener('pointerup', endSeek);
   bar.addEventListener('pointercancel', () => { seeking = false; bar.classList.remove('drag'); });
-  bar.addEventListener('keydown', e => {
-    if (!audio.duration) return;
-    if (e.key === 'ArrowRight') audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
-    if (e.key === 'ArrowLeft') audio.currentTime = Math.max(0, audio.currentTime - 5);
-  });
   const vol = $('vol');
   try { const v = localStorage.getItem('ttcux_vol'); if (v !== null) vol.value = v; } catch (e) {}
   audio.volume = vol.value;
   vol.oninput = () => { audio.volume = vol.value; try { localStorage.setItem('ttcux_vol', vol.value); } catch (e) {} };
   load(0, false);
 
+  /* ----- горячие клавиши ----- */
+  const setVol = v => { vol.value = Math.min(1, Math.max(0, v)); vol.oninput(); toast('Громкость: ' + Math.round(vol.value * 100) + '%'); };
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const tg = e.target, tag = tg.tagName;
+    if (tag === 'INPUT' && tg.type !== 'range' || tag === 'TEXTAREA' || tg.isContentEditable) return;
+    if (!entered) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('gate').click(); } return; }
+    const k = e.key.toLowerCase();
+    if ((k === ' ' || k === 'k') && !(tag === 'BUTTON' || tag === 'A')) { e.preventDefault(); $('play').click(); }
+    else if (k === 'arrowright' && !e.shiftKey && audio.duration) { e.preventDefault(); audio.currentTime = Math.min(audio.duration, audio.currentTime + 5); }
+    else if (k === 'arrowleft' && !e.shiftKey && audio.duration) { e.preventDefault(); audio.currentTime = Math.max(0, audio.currentTime - 5); }
+    else if (k === 'n' || (k === 'arrowright' && e.shiftKey)) { e.preventDefault(); $('next').click(); }
+    else if (k === 'p' || (k === 'arrowleft' && e.shiftKey)) { e.preventDefault(); $('prev').click(); }
+    else if (k === 'arrowup') { e.preventDefault(); setVol(+vol.value + .05); }
+    else if (k === 'arrowdown') { e.preventDefault(); setVol(+vol.value - .05); }
+    else if (k === 'm') { audio.muted = !audio.muted; toast(audio.muted ? 'Звук выключен' : 'Звук включён'); }
+  });
+
   /* ----- визуализатор ----- */
-  let analyser, freq;
+  let analyser, freq, beat = 0;
+  const avWrap = document.querySelector('.avatar-wrap');
   const viz = $('viz'), vx = viz.getContext('2d');
   function initViz() {
     if (analyser) return;
@@ -565,11 +712,14 @@ const CONFIG = {
       vx.fillRect(i * bw + 1, H - h, bw - 2, h);
     }
     vx.globalAlpha = 1;
+    // пульс аватарки по басу
+    let b = 0; for (let i = 0; i < 4; i++) b += freq[i]; b = b / 4 / 255;
+    beat += (Math.max(0, (b - .45) / .55) - beat) * .35;
+    avWrap.style.setProperty('--beat', beat.toFixed(3));
     requestAnimationFrame(drawViz);
   }
 
   /* ----- вход ----- */
-  let entered = false;
   $('gate').addEventListener('click', () => {
     if (entered) return;
     entered = true;
@@ -577,14 +727,16 @@ const CONFIG = {
     document.body.classList.add('entered');
     play();
     startTyping();
+    setTabTitle();
   });
 
   /* ----- часы (МСК) ----- */
   const upd = () => $('clock').textContent = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Moscow' });
   upd(); setInterval(upd, 10000);
 
-  /* ----- счётчик просмотров (общий для всех посетителей) ----- */
-  (async () => {
+  /* ----- счётчик просмотров ----- */
+  const showViews = v => { if (v !== undefined && v !== null && v !== '') $('views').textContent = String(v).replace(/,/g, ' '); };
+  async function backupCounter() {
     const base = 'https://countapi.mileshilliard.com/api/v1/';
     let first = true;
     try { first = !sessionStorage.getItem('ttcux_seen'); sessionStorage.setItem('ttcux_seen', '1'); } catch (e) {}
@@ -592,40 +744,117 @@ const CONFIG = {
       const r = await fetch(base + (first ? 'hit/' : 'get/') + CONFIG.counterKey);
       const d = await r.json();
       const v = d.value ?? d.count;
-      if (v !== undefined) $('views').textContent = Number(v).toLocaleString('ru-RU');
-    } catch (e) { /* сервис недоступен — остаётся «—» */ }
-  })();
-
-  /* ----- Discord-статус через Lanyard ----- */
-  const statusText = { online: 'в сети', idle: 'отошёл', dnd: 'не беспокоить', offline: 'не в сети' };
-  async function presence() {
-    if (!CONFIG.discordId) return;
-    try {
-      const r = await fetch('https://api.lanyard.rest/v1/users/' + CONFIG.discordId);
-      const j = await r.json();
-      if (!j.success) return;
-      const d = j.data, s = d.discord_status || 'offline';
-      $('status').dataset.s = s;
-      $('status').title = statusText[s] || s;
-      $('presence').classList.add('on');
-      const act = (d.activities || []).find(a => a.type !== 4);
-      const custom = (d.activities || []).find(a => a.type === 4);
-      const ico = $('p-ico');
-      if (d.listening_to_spotify && d.spotify) {
-        $('p-top').textContent = 'Слушает Spotify';
-        $('p-sub').textContent = d.spotify.song + ' — ' + d.spotify.artist;
-        ico.innerHTML = ''; const im = new Image(); im.className = 'p-ico'; im.src = d.spotify.album_art_url; ico.appendChild(im);
-      } else if (act) {
-        const verb = { 0: 'Играет в', 1: 'Стримит', 2: 'Слушает', 3: 'Смотрит', 5: 'Соревнуется в' }[act.type] || 'Занят:';
-        $('p-top').textContent = verb + ' ' + act.name;
-        $('p-sub').textContent = [act.details, act.state].filter(Boolean).join(' · ') || statusText[s];
-      } else {
-        $('p-top').textContent = 'Discord · ' + (statusText[s] || s);
-        $('p-sub').textContent = custom?.state || 'ничем не занят';
-      }
+      if (v !== undefined) showViews(Number(v).toLocaleString('ru-RU'));
     } catch (e) {}
   }
-  presence(); setInterval(presence, 30000);
+  if (CONFIG.goatcounter) {
+    const gc = 'https://' + CONFIG.goatcounter + '.goatcounter.com';
+    const sc = document.createElement('script');
+    sc.async = true; sc.src = 'https://gc.zgo.at/count.js'; sc.dataset.goatcounter = gc + '/count';
+    document.head.appendChild(sc);
+    // число берём чуть позже, чтобы текущий заход успел засчитаться
+    setTimeout(async () => {
+      try {
+        const r = await fetch(gc + '/counter/TOTAL.json');
+        if (!r.ok) throw 0;
+        showViews((await r.json()).count);
+      } catch (e) { backupCounter(); }
+    }, 1500);
+  } else backupCounter();
+
+  /* ----- Discord-статус через Lanyard (WebSocket, мгновенно) ----- */
+  const statusText = { online: 'в сети', idle: 'отошёл', dnd: 'не беспокоить', offline: 'не в сети' };
+  const GAME_ICO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="11" rx="4"/><path d="M7 11v3M5.5 12.5h3M15.5 12h.01M18 14h.01"/></svg>';
+  let pres = null;
+  const assetUrl = (appId, img) => {
+    if (!img) return '';
+    if (img.startsWith('mp:')) return 'https://media.discordapp.net/' + img.slice(3);
+    if (img.startsWith('spotify:')) return 'https://i.scdn.co/image/' + img.slice(8);
+    return appId ? `https://cdn.discordapp.com/app-assets/${appId}/${img}.png` : '';
+  };
+  const setImg = (url) => {
+    const box = $('p-img');
+    if (!url) { box.innerHTML = GAME_ICO; return; }
+    if (box.dataset.url === url) return;
+    box.dataset.url = url; box.innerHTML = '';
+    const im = new Image(); im.alt = ''; im.src = url; im.onerror = () => { box.innerHTML = GAME_ICO; }; box.appendChild(im);
+  };
+  const dur = ms => { const s = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), ss = String(s % 60).padStart(2, '0'); return h ? `${h}:${String(m).padStart(2, '0')}:${ss}` : `${m}:${ss}`; };
+
+  function renderPresence(d) {
+    if (!d || !d.discord_user) return;
+    pres = d;
+    const u = d.discord_user, s = d.discord_status || 'offline';
+    $('presence').classList.add('on');
+    $('status').dataset.s = s; $('status').title = statusText[s] || s;
+    $('p-dot').dataset.s = s;
+    $('p-name').textContent = u.global_name || u.display_name || u.username;
+    $('p-stat').textContent = '· ' + (statusText[s] || s);
+    const av = u.avatar
+      ? `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${u.avatar.startsWith('a_') ? 'gif' : 'png'}?size=128`
+      : `https://cdn.discordapp.com/embed/avatars/${Number((BigInt(u.id) >> 22n) % 6n)}.png`;
+    if ($('p-avatar').src !== av) $('p-avatar').src = av;
+    const acts = d.activities || [];
+    const custom = acts.find(a => a.type === 4);
+    $('p-custom').textContent = custom ? [custom.emoji && !custom.emoji.id ? custom.emoji.name : '', custom.state || ''].join(' ').trim() : '';
+    const act = acts.find(a => a.type !== 4 && a.name !== 'Spotify');
+    const box = $('p-act');
+    $('p-prog').classList.remove('on'); $('p-el').textContent = ''; $('p-sub2').textContent = '';
+    if (d.listening_to_spotify && d.spotify) {
+      box.classList.add('on');
+      $('p-top').textContent = 'Слушает Spotify';
+      $('p-sub').textContent = d.spotify.song;
+      $('p-sub2').textContent = d.spotify.artist;
+      setImg(d.spotify.album_art_url);
+      $('p-prog').classList.add('on');
+    } else if (act) {
+      box.classList.add('on');
+      const verb = { 0: 'Играет в', 1: 'Стримит', 2: 'Слушает', 3: 'Смотрит', 5: 'Соревнуется в' }[act.type] || '';
+      $('p-top').textContent = (verb ? verb + ' ' : '') + act.name;
+      $('p-sub').textContent = act.details || '';
+      $('p-sub2').textContent = act.state || '';
+      setImg(assetUrl(act.application_id, act.assets && act.assets.large_image));
+    } else {
+      box.classList.remove('on');
+    }
+    tickPresence();
+  }
+  function tickPresence() {
+    if (!pres) return;
+    const now = Date.now();
+    if (pres.listening_to_spotify && pres.spotify && pres.spotify.timestamps) {
+      const { start, end } = pres.spotify.timestamps, total = end - start, cur = Math.min(total, now - start);
+      $('p-fill').style.width = (cur / total * 100) + '%';
+      $('p-cur').textContent = dur(cur); $('p-end').textContent = dur(total);
+    } else {
+      const act = (pres.activities || []).find(a => a.type !== 4 && a.name !== 'Spotify');
+      if (act && act.timestamps && act.timestamps.start) $('p-el').textContent = dur(now - act.timestamps.start) + ' прошло';
+    }
+  }
+  setInterval(tickPresence, 1000);
+
+  async function presenceREST() {
+    try { const j = await (await fetch('https://api.lanyard.rest/v1/users/' + CONFIG.discordId)).json(); if (j.success) renderPresence(j.data); } catch (e) {}
+  }
+  let wsFails = 0, poll = null;
+  function presenceWS() {
+    let hb, ws;
+    try { ws = new WebSocket('wss://api.lanyard.rest/socket'); } catch (e) { return fallback(); }
+    ws.onmessage = ev => {
+      let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
+      if (m.op === 1) {
+        hb = setInterval(() => { try { ws.send(JSON.stringify({ op: 3 })); } catch (e) {} }, m.d.heartbeat_interval);
+        ws.send(JSON.stringify({ op: 2, d: { subscribe_to_id: CONFIG.discordId } }));
+      } else if (m.op === 0) {
+        wsFails = 0;
+        const t = m.t || m.e;
+        if (t === 'INIT_STATE' || t === 'PRESENCE_UPDATE') renderPresence(m.d && m.d.discord_user ? m.d : (m.d && m.d[CONFIG.discordId]));
+      }
+    };
+    ws.onclose = () => { clearInterval(hb); if (++wsFails > 3) return fallback(); setTimeout(presenceWS, 3000 * wsFails); };
+  }
+  function fallback() { if (!poll) poll = setInterval(presenceREST, 30000); }
+  if (CONFIG.discordId) { presenceREST(); presenceWS(); }
 
   /* ----- 3D-наклон карточки ----- */
   const card = $('card');
@@ -636,24 +865,47 @@ const CONFIG = {
     });
   }
 
+  /* ----- неоновый курсор (только мышь) ----- */
+  if (matchMedia('(pointer:fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.body.classList.add('neon-cursor');
+    const dot = $('cur-dot'), ring = $('cur-ring');
+    let mx = -100, my = -100, rx = -100, ry = -100;
+    addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.transform = `translate(${mx}px,${my}px)`;
+      dot.classList.add('show'); ring.classList.add('show');
+      ring.classList.toggle('hover', !!e.target.closest('a,button,.bar,.li,input,.proj,.bdg,#gate'));
+    });
+    document.addEventListener('mouseleave', () => { dot.classList.remove('show'); ring.classList.remove('show'); });
+    addEventListener('mousedown', () => ring.classList.add('down'));
+    addEventListener('mouseup', () => ring.classList.remove('down'));
+    (function follow() {
+      rx += (mx - rx) * .2; ry += (my - ry) * .2;
+      ring.style.transform = `translate(${rx}px,${ry}px)`;
+      requestAnimationFrame(follow);
+    })();
+  }
+
   /* ----- частицы: дождь + неоновые искры + след курсора ----- */
   const cv = $('fx'), cx = cv.getContext('2d');
   const colors = ['#3ef4ff', '#a55bff', '#ff4fd8', '#ff9a3c'];
   let W, H, rain = [], sparks = [], trail = [];
+  const lite = matchMedia('(max-width:600px), (pointer:coarse)').matches || (navigator.hardwareConcurrency || 8) <= 4;
+  const DPR = Math.min(devicePixelRatio || 1, lite ? 1.5 : 2);
   const resize = () => {
-    W = cv.width = innerWidth * devicePixelRatio;
-    H = cv.height = innerHeight * devicePixelRatio;
-    const n = Math.min(160, Math.floor(innerWidth / 9));
+    W = cv.width = innerWidth * DPR;
+    H = cv.height = innerHeight * DPR;
+    const n = Math.min(lite ? 60 : 160, Math.floor(innerWidth / 9));
     rain = Array.from({ length: n }, () => ({ x: Math.random() * W, y: Math.random() * H, l: 10 + Math.random() * 22, v: 7 + Math.random() * 9 }));
-    sparks = Array.from({ length: 45 }, () => ({
-      x: Math.random() * W, y: Math.random() * H, r: (0.6 + Math.random() * 1.8) * devicePixelRatio,
+    sparks = Array.from({ length: lite ? 18 : 45 }, () => ({
+      x: Math.random() * W, y: Math.random() * H, r: (0.6 + Math.random() * 1.8) * DPR,
       vx: (Math.random() - .5) * .3, vy: -(0.15 + Math.random() * .45), c: colors[Math.random() * 4 | 0], a: Math.random() * 6.28
     }));
   };
   resize(); addEventListener('resize', resize);
   addEventListener('mousemove', e => {
     for (let k = 0; k < 2; k++) trail.push({
-      x: e.clientX * devicePixelRatio, y: e.clientY * devicePixelRatio,
+      x: e.clientX * DPR, y: e.clientY * DPR,
       vx: (Math.random() - .5) * 1.5, vy: (Math.random() - .5) * 1.5, life: 1, c: colors[Math.random() * 4 | 0]
     });
     if (trail.length > 120) trail.splice(0, trail.length - 120);
@@ -661,7 +913,7 @@ const CONFIG = {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   (function loop() {
     cx.clearRect(0, 0, W, H);
-    cx.strokeStyle = 'rgba(150,200,255,.22)'; cx.lineWidth = devicePixelRatio;
+    cx.strokeStyle = 'rgba(150,200,255,.22)'; cx.lineWidth = DPR;
     cx.beginPath();
     for (const d of rain) {
       cx.moveTo(d.x, d.y); cx.lineTo(d.x - d.l * .15, d.y + d.l);
@@ -673,14 +925,14 @@ const CONFIG = {
       s.a += .03; s.x += s.vx; s.y += s.vy;
       if (s.y < -10) { s.y = H + 10; s.x = Math.random() * W; }
       cx.globalAlpha = .45 + Math.sin(s.a) * .35;
-      cx.shadowBlur = 14; cx.shadowColor = s.c; cx.fillStyle = s.c;
+      cx.shadowBlur = lite ? 0 : 14; cx.shadowColor = s.c; cx.fillStyle = s.c;
       cx.beginPath(); cx.arc(s.x, s.y, s.r, 0, 6.28); cx.fill();
     }
     for (const t of trail) {
       t.x += t.vx; t.y += t.vy; t.life -= .025;
       if (t.life <= 0) continue;
       cx.globalAlpha = t.life; cx.shadowColor = t.c; cx.fillStyle = t.c;
-      cx.beginPath(); cx.arc(t.x, t.y, 2.2 * devicePixelRatio * t.life, 0, 6.28); cx.fill();
+      cx.beginPath(); cx.arc(t.x, t.y, 2.2 * DPR * t.life, 0, 6.28); cx.fill();
     }
     trail = trail.filter(t => t.life > 0);
     cx.globalAlpha = 1; cx.shadowBlur = 0;
